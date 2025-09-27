@@ -40,11 +40,11 @@ fastify.get("/", async function rootHandler(request, reply) {
 fastify.get("/react-flight", function reactFlightHandler(request, reply) {
   try {
     reply.header("Content-Type", "application/octet-stream");
-    // be careful about whitespace as React Flight is sensitive to it. Make your editor isn't inserting any
-    return reply.send(`1:{"name":"App","env":"Server","key":null,"owner":null,"props":{}}
-0:D"$1"
-0:["$","div",null,{"children":["$","h1",null,{"children":"Notes App"},"$1"]},"$1"]
-`);
+    const { pipe } = renderToPipeableStream(
+      React.createElement(App),
+      MODULE_MAP
+    );
+    pipe(reply.raw);
   } catch (err) {
     request.log.error("react-flight err", err);
     throw err;
